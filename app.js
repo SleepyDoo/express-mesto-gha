@@ -17,13 +17,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '626ecd03992596a8889a46a1', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '626fcc1634c6d077d1104740',
   };
 
   next();
 });
 
 app.use('/', require('./routes/users'));
+app.use('/', require('./routes/cards'));
 
 app.listen(PORT, () => {
   console.log('Ссылка на сервер:');

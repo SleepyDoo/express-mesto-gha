@@ -10,5 +10,6 @@ module.exports = {
       },
     ],
     'no-console': 'off',
+    'linebreak-style': 'windows',
   },
 };
