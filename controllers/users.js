@@ -4,8 +4,8 @@ const { handleErorr, notFoundErr } = require('../errors/errorHandler');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      if (users) {
-        Promise.reject();
+      if (users === null) {
+        throw notFoundErr;
       } else {
         res.send({ data: users })
       }
