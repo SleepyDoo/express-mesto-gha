@@ -18,8 +18,12 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.deleteOne({ _id: req.params.cardId })
-  .then(() => {
-    res.send('DONE');
+  .then((card) => {
+    if ((card === null)) {
+      throw notFoundErr;
+    } else {
+      res.send({ data: card });
+    }
   })
   .catch((err) => handleErorr(err, res));
 }
@@ -30,16 +34,27 @@ module.exports.likeCard = (req, res) => {
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-.then((card) => {res.send({data: card})})
-.catch((err) => handleErorr(err, res));
+  .then((card) => {
+      if ((card === null)) {
+        throw notFoundErr;
+      } else {
+        res.send({ data: card });
+      }
+    })
+  .catch((err) => handleErorr(err, res));
 }
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
-  { new: true },
-)
-.then((card) => {res.send({data: card})})
-.catch((err) => handleErorr(err, res));
+  { new: true })
+  .then((card) => {
+      if ((card === null)) {
+        throw notFoundErr;
+      } else {
+        res.send({ data: card });
+      }
+    })
+  .catch((err) => handleErorr(err, res));
 }
