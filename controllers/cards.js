@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { handleErorr, notFoundErr } = require('../errors/errorHandler');
+const { handleErorr, notFoundErr, handleIdValid } = require('../errors/errorHandler');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -33,8 +33,8 @@ module.exports.likeCard = (req, res) => {
   req.params.cardId,
   { $addToSet: { likes: req.user._id } },
   { new: true },
-)
-  .then((card) => {
+  )
+    .then((card) => {
       if ((card === null)) {
         throw notFoundErr;
       } else {
