@@ -17,7 +17,7 @@ module.exports.createCard = (req, res) => {
 }
 
 module.exports.deleteCard = (req, res) => {
-  Card.deleteOne({ _id: req.params.cardId })
+  Card.findOneAndDelete({ _id: req.params.cardId })
   .then((card) => {
     if ((card === null)) {
       throw notFoundErr;
