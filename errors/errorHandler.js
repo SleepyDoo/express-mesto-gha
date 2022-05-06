@@ -2,15 +2,12 @@ const CAST_ERR = 404;
 const VALIDATION_ERR = 400;
 const BASE_ERR = 500;
 
-const validationErr = {
-  name: "ValidationError"
-}
-
 module.exports.notFoundErr = {
   name: "CastError"
 }
 
 module.exports.handleErorr = (err, res) => {
+  //res.send(err);
   if (err.name === "CastError") {
     if (err.kind === "ObjectId" && err.value.lenght != 24) {
       console.log("kind is objecyId");
@@ -21,15 +18,6 @@ module.exports.handleErorr = (err, res) => {
     return res.status(VALIDATION_ERR).send({ message: "Переданы некорректные данные"});
   } else {
     return res.status(BASE_ERR).send({ message: "Произошла ошибка на стороне сервера"});
-  }
-}
-
-module.exports.handleIdValid = (id) => {
-  console.log(typeof id);
-  if (id.length != 24) {
-    console.log("ERROR");
-    return;
-    //throw validationErr;
   }
 }
 
