@@ -13,9 +13,10 @@ module.exports.handleErorr = (err, res) => {
     if (err.kind === 'ObjectId' && err.value.lenght != 24) {
       stat = VALIDATION_ERR;
       mess.message = 'Переданы некорректные данные';
+    } else {
+      stat = CAST_ERR;
+      mess.message = 'Не найдено';
     }
-    stat = CAST_ERR;
-    mess.message = 'Не найдено';
   } else if (err.name === 'ValidationError') {
     stat = VALIDATION_ERR;
     mess.message = 'Переданы некорректные данные';
