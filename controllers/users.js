@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { handleErorr, notFoundErr, handleIdValid } = require('../errors/errorHandler');
+const { handleErorr, notFoundErr } = require('../errors/errorHandler');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findOneAndUpdate({_id: req.user._id}, { name, about }, { new: true })
+  User.findOneAndUpdate({_id: req.user._id}, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if ((user === null)) {
         throw notFoundErr;
