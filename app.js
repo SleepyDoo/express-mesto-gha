@@ -27,7 +27,7 @@ app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: "Не найдено" });
+  res.status(404).send({ message: 'Не найдено' });
   next();
 });
 

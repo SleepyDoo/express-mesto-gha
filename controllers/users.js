@@ -7,12 +7,11 @@ module.exports.getUsers = (req, res) => {
       if (users === null) {
         throw notFoundErr;
       } else {
-        res.send({ data: users })
+        res.send({ data: users });
       }
     })
     .catch((err) => handleErorr(err, res));
 };
-
 
 module.exports.getUsersById = (req, res) => {
   User.findById(req.params.userId)
@@ -35,7 +34,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findOneAndUpdate({_id: req.user._id}, { name, about }, { new: true, runValidators: true })
+  User.findOneAndUpdate({ _id: req.user._id }, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if ((user === null)) {
         throw notFoundErr;
@@ -43,8 +42,8 @@ module.exports.updateUser = (req, res) => {
         res.send({ data: user });
       }
     })
-  .catch((err) => handleErorr(err, res));
-}
+    .catch((err) => handleErorr(err, res));
+};
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
@@ -56,5 +55,5 @@ module.exports.updateAvatar = (req, res) => {
         res.send({ data: user });
       }
     })
-  .catch((err) => handleErorr(err, res));
-}
+    .catch((err) => handleErorr(err, res));
+};
