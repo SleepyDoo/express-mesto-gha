@@ -10,6 +10,9 @@
       }
     ],
     "no-console": "off",
-    "linebreak-style": "windows"
+    "linebreak-style": [
+      2,
+      "windows"
+    ]
   }
 }
