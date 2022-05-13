@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { handleErorr, notFoundErr, handleIdValid } = require('../errors/errorHandler');
+const { handleErorr, notFoundErr } = require('../errors/errorHandler');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -12,27 +12,27 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-  .then((card) => res.send({ data: card }))
-  .catch((err) => handleErorr(err, res));
-}
+    .then((card) => res.send({ data: card }))
+    .catch((err) => handleErorr(err, res));
+};
 
 module.exports.deleteCard = (req, res) => {
   Card.findOneAndDelete({ _id: req.params.cardId })
-  .then((card) => {
-    if ((card === null)) {
-      throw notFoundErr;
-    } else {
-      res.send({ data: card });
-    }
-  })
-  .catch((err) => handleErorr(err, res));
-}
+    .then((card) => {
+      if ((card === null)) {
+        throw notFoundErr;
+      } else {
+        res.send({ data: card });
+      }
+    })
+    .catch((err) => handleErorr(err, res));
+};
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $addToSet: { likes: req.user._id } },
-  { new: true },
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
   )
     .then((card) => {
       if ((card === null)) {
@@ -41,20 +41,21 @@ module.exports.likeCard = (req, res) => {
         res.send({ data: card });
       }
     })
-  .catch((err) => handleErorr(err, res));
-}
+    .catch((err) => handleErorr(err, res));
+};
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $pull: { likes: req.user._id } },
-  { new: true })
-  .then((card) => {
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((card) => {
       if ((card === null)) {
         throw notFoundErr;
       } else {
         res.send({ data: card });
       }
     })
-  .catch((err) => handleErorr(err, res));
-}
+    .catch((err) => handleErorr(err, res));
+};
