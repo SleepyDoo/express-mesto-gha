@@ -1,9 +1,14 @@
 const CAST_ERR = 404;
 const VALIDATION_ERR = 400;
 const BASE_ERR = 500;
+const BADLOGIN_ERR = 401;
 
 module.exports.notFoundErr = {
   name: 'CastError',
+};
+
+module.exports.badLogin = {
+  name: 'badLogin',
 };
 
 module.exports.handleErorr = (err, res) => {
@@ -20,6 +25,10 @@ module.exports.handleErorr = (err, res) => {
   } else if (err.name === 'ValidationError') {
     stat = VALIDATION_ERR;
     mess.message = 'Переданы некорректные данные';
+  } else if (err.name === 'badLogin') {
+    stat = BADLOGIN_ERR;
+    mess.message = 'Неправильные почта или пароль';
   }
+
   return res.status(stat).send(mess);
 };

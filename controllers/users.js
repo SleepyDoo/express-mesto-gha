@@ -1,5 +1,9 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { handleErorr, notFoundErr } = require('../errors/errorHandler');
+const { handleErorr, notFoundErr, badLogin } = require('../errors/errorHandler');
+
+const SALT_NUM = 10;
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -26,8 +30,13 @@ module.exports.getUsersById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, SALT_NUM)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErorr(err, res));
 };
@@ -56,4 +65,47 @@ module.exports.updateAvatar = (req, res) => {
       }
     })
     .catch((err) => handleErorr(err, res));
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw badLogin;
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw badLogin;
+          }
+          const token = jwt.sign({ _id: user._id }, 'secret', {
+            expiresIn: '7d',
+          });
+          res.cookie('jwt', token, {
+            maxAge: 3600000,
+            httpOnly: true,
+          });
+          res.send({ token });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      handleErorr(err, res);
+    });
+};
+
+module.exports.getCurrentUser = (req, res) => {
+  res.send(req.user._id);
+  User.findById(req.user._id)
+    .then((user) => {
+      console.log(user);
+      if (!user) {
+        throw notFoundErr;
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      handleErorr(err, res);
+    });
 };
