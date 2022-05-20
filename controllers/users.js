@@ -6,7 +6,6 @@ const { handleErorr, notFoundErr, badLogin } = require('../errors/errorHandler')
 const SALT_NUM = 10;
 
 module.exports.getUsers = (req, res) => {
-  console.log(req.user);
   User.find({})
     .then((users) => {
       if (users === null) {

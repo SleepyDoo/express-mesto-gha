@@ -2,8 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
+
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
+const { loginVal, createUserVal } = require('./errors/validation');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -19,8 +22,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', loginVal, login);
+app.post('/signup', createUserVal, createUser);
 
 app.use('/', auth, require('./routes/users'));
 app.use('/', auth, require('./routes/cards'));
@@ -29,6 +32,8 @@ app.use((req, res, next) => {
   res.status(404).send({ message: 'Не найдено' });
   next();
 });
+
+app.use(errors());
 
 app.listen(PORT, () => {
   console.log('Ссылка на сервер:');
