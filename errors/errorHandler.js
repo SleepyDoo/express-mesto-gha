@@ -17,7 +17,7 @@ module.exports.handleErorr = (err, res) => {
   if (err.name === 'CastError') {
     if (err.kind === 'ObjectId' && err.value.lenght !== 24) {
       stat = VALIDATION_ERR;
-      mess.message = 'Переданы некорректные данные';
+      mess.message = 'Переданы некорректные данные2';
     } else {
       stat = CAST_ERR;
       mess.message = 'Не найдено';
@@ -29,6 +29,5 @@ module.exports.handleErorr = (err, res) => {
     stat = BADLOGIN_ERR;
     mess.message = 'Неправильные почта или пароль';
   }
-
   return res.status(stat).send(mess);
 };

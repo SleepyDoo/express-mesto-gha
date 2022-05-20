@@ -6,6 +6,7 @@ const { handleErorr, notFoundErr, badLogin } = require('../errors/errorHandler')
 const SALT_NUM = 10;
 
 module.exports.getUsers = (req, res) => {
+  console.log(req.user);
   User.find({})
     .then((users) => {
       if (users === null) {
@@ -96,16 +97,17 @@ module.exports.login = (req, res) => {
 };
 
 module.exports.getCurrentUser = (req, res) => {
-  res.send(req.user._id);
+  console.log(req.user);
   User.findById(req.user._id)
     .then((user) => {
       console.log(user);
       if (!user) {
         throw notFoundErr;
       }
-      res.send(user);
+      res.send({ user });
     })
     .catch((err) => {
+      console.log(req);
       handleErorr(err, res);
     });
 };
