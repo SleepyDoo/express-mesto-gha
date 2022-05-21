@@ -1,8 +1,11 @@
 const { celebrate, Joi } = require('celebrate');
 
+const urlRegex = /https?[www.]?:\/\/([a-z0-9A-Z]{2,256})\.([a-zA-Z]{1,4})\/([a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)/;
+
 module.exports.updateAvatarVal = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required(),
+    link: Joi.string().required().pattern(urlRegex),
   }).unknown(true),
 });
 
@@ -26,14 +29,14 @@ module.exports.createUserVal = celebrate({
     password: Joi.string().required().min(2).max(30),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().required().pattern(urlRegex),
   }).unknown(true),
 });
 
 module.exports.newCardVal = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required().pattern(urlRegex),
   }).unknown(true),
 });
 
