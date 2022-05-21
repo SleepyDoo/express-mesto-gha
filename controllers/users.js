@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundErr = require('../errors/notFoundErr');
 const BadLoginErr = require('../errors/badLoginErr');
+const ConflictErr = require('../errors/conflictErr');
 
 const SALT_NUM = 10;
 
@@ -46,7 +47,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new BadLoginErr('Почта уже занята');
+        throw new ConflictErr('Почта уже занята');
       }
     })
     .catch(next);
