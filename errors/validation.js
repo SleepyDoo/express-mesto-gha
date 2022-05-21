@@ -1,16 +1,8 @@
-const { celebrate, Joi, CelebrateError } = require('celebrate');
-const { validation } = require('validator');
-
-const urlVal = (url) => {
-  if (!validation.isURL(url)) {
-    throw new CelebrateError('Введите корректную ссылку');
-  }
-  return url;
-};
+const { celebrate, Joi } = require('celebrate');
 
 module.exports.updateAvatarVal = celebrate({
   body: Joi.object().keys({
-    link: Joi.string().required().custom(urlVal),
+    avatar: Joi.string().required(),
   }),
 });
 
@@ -34,13 +26,14 @@ module.exports.createUserVal = celebrate({
     password: Joi.string().required().min(2).max(30),
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
+    avatar: Joi.string().required(),
   }),
 });
 
 module.exports.newCardVal = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().custom(urlVal),
+    link: Joi.string().required(),
   }),
 });
 
