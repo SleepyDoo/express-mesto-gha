@@ -29,5 +29,9 @@ module.exports.handleErorr = (err, res) => {
     stat = BADLOGIN_ERR;
     mess.message = 'Неправильные почта или пароль';
   }
+  if (err.code === 11000) {
+    stat = 409;
+    mess.message = 'Почта занята';
+  }
   return res.status(stat).send(mess);
 };
