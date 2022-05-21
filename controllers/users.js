@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { NotFoundErr } = require('../errors/notFoundErr');
-const { BadLoginErr } = require('../errors/badLoginErr');
+const NotFoundErr = require('../errors/notFoundErr');
+const BadLoginErr = require('../errors/badLoginErr');
 
 const SALT_NUM = 10;
 
@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (users === null) {
-        throw new NotFoundErr({ message: 'Пользователь не найден' });
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: users });
       }
@@ -23,7 +23,7 @@ module.exports.getUsersById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if ((!user)) {
-        throw new NotFoundErr({ message: 'Пользователь не найден' });
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
@@ -44,6 +44,11 @@ module.exports.createUser = (req, res, next) => {
         name: user.name, about: user.about, avatar: user.avatar, email: user.email,
       },
     }))
+    .catch((err) => {
+      if (err.code === 11000) {
+        throw new BadLoginErr('Почта уже занята');
+      }
+    })
     .catch(next);
 };
 
@@ -52,7 +57,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findOneAndUpdate({ _id: req.user._id }, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if ((user === null)) {
-        throw new NotFoundErr({ message: 'Пользователь не найден' });
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
@@ -65,7 +70,7 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findOneAndUpdate({ _id: req.user._id }, { avatar }, { new: true })
     .then((user) => {
       if ((user === null)) {
-        throw new NotFoundErr({ message: 'Пользователь не найден' });
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
@@ -78,12 +83,12 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new BadLoginErr({ message: 'Неверные пароль или почта' });
+        throw new BadLoginErr('Неверные пароль или почта');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new BadLoginErr({ message: 'Неверные пароль или почта' });
+            throw new BadLoginErr('Неверные пароль или почта');
           }
           const token = jwt.sign({ _id: user._id }, 'secret', {
             expiresIn: '7d',
@@ -104,7 +109,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     .then((user) => {
       console.log(user);
       if (!user) {
-        throw new NotFoundErr({ message: 'Пользователь не найден' });
+        throw new NotFoundErr('Пользователь не найден');
       }
       res.send({ user });
     })
