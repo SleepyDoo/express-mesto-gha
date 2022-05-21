@@ -20,7 +20,7 @@ module.exports.createCard = (req, res, next) => {
         throw new ValidationErr('Переданы некорректные данные');
       }
       next(err);
-    })
+    });
 };
 
 module.exports.deleteCard = (req, res, next) => {
@@ -34,7 +34,7 @@ module.exports.deleteCard = (req, res, next) => {
       } else {
         res.send({ data: card });
       }
-      return card.remove().then(() => { res.send('Карточка удалена') })
+      return card.remove().then(() => { res.send('Карточка удалена'); });
     })
     .catch(next);
 };

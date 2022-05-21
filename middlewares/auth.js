@@ -6,7 +6,7 @@ module.exports.auth = (req, res, next) => {
   let payload;
   try {
     payload = jwt.verify(token, 'secret');
-  } catch(err) {
+  } catch (err) {
     next(new NotFoundErr('Необходима авторизация'));
   }
   req.user = payload;

@@ -1,10 +1,12 @@
 const { celebrate, Joi } = require('celebrate');
 const validation = require('validator');
 
-// const urlRegex = /https?[www\.]?:\/\/([a-z0-9A-Z]{2,256})\.([a-zA-Z]{1,4})\/([a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)/;
+// const urlRegex
+// = /https?[www\.]?:\/\/([a-z0-9A-Z]{2,256})\.
+// \([a-zA-Z]{1,4})\/([a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)/;
 
 const validateURL = (value) => {
-  if (!validator.isURL(value, { require_protocol: true })) {
+  if (!validation.isURL(value, { require_protocol: true })) {
     throw new Error('Неправильный формат ссылки');
   }
   return value;

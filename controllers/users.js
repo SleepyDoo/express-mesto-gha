@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundErr = require('../errors/notFoundErr');
 const BadLoginErr = require('../errors/badLoginErr');
 const ConflictErr = require('../errors/conflictErr');
+const ValidationErr = require('../errors/validationErr');
 
 const SALT_NUM = 10;
 
@@ -53,7 +54,7 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictErr('Почта уже занята');
       }
       next(err);
-    })
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
