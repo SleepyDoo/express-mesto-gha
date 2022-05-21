@@ -4,8 +4,7 @@ const urlRegex = /https?[www.]?:\/\/([a-z0-9A-Z]{2,256})\.([a-zA-Z]{1,4})\/([a-z
 
 module.exports.updateAvatarVal = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
-    link: Joi.string().required().pattern(urlRegex),
+    avatar: Joi.string().required().pattern(urlRegex),
   }).unknown(true),
 });
 
@@ -29,7 +28,7 @@ module.exports.createUserVal = celebrate({
     password: Joi.string().required().min(2).max(30),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().required().pattern(urlRegex),
+    avatar: Joi.string().pattern(urlRegex),
   }).unknown(true),
 });
 
