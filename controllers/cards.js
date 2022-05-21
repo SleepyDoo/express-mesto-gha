@@ -22,10 +22,11 @@ module.exports.deleteCard = (req, res) => {
       if ((card === null)) {
         throw notFoundErr;
       }
-      if (card.owner._id !== req.user._id) {
-        res.status(403).res.send({ message: 'forbidden' });
+      if (card.owner._id.toString() !== req.user._id) {
+        res.status(403).send({ message: 'forbidden' });
+      } else {
+        res.send({ data: card });
       }
-      res.send({ data: card });
     })
     .catch((err) => handleErorr(err, res));
 };

@@ -39,6 +39,6 @@ module.exports.newCardVal = celebrate({
 
 module.exports.idVal = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24).hex(),
+    _id: Joi.string().alphanum().length(24),
   }).unknown(true),
 });

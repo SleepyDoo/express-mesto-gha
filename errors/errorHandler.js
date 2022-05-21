@@ -14,6 +14,7 @@ module.exports.badLogin = {
 module.exports.handleErorr = (err, res) => {
   let stat = BASE_ERR;
   const mess = { message: 'Произошла ошибка на стороне сервера' };
+  console.log(err);
   if (err.name === 'CastError') {
     if (err.kind === 'ObjectId' && err.value.lenght !== 24) {
       stat = VALIDATION_ERR;
