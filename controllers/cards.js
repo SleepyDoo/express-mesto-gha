@@ -1,37 +1,38 @@
 const Card = require('../models/card');
-const { handleErorr, notFoundErr } = require('../errors/errorHandler');
+const { NotFoundErr } = require('../errors/notFoundErr');
+const { ForbiddenErr } = require('../errors/forbiddenErr');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findOneAndDelete({ _id: req.params.cardId })
     .then((card) => {
       if ((card === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Карточка не найдена');
       }
       if (card.owner._id.toString() !== req.user._id) {
-        res.status(403).send({ message: 'forbidden' });
+        throw new ForbiddenErr('Вы можете удалять только свои карточки');
       } else {
         res.send({ data: card });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -39,15 +40,15 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if ((card === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Карточка не найдена');
       } else {
         res.send({ data: card });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -55,10 +56,10 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if ((card === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Карточка не найдена');
       } else {
         res.send({ data: card });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };

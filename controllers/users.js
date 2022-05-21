@@ -1,36 +1,37 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { handleErorr, notFoundErr, badLogin } = require('../errors/errorHandler');
+const { NotFoundErr } = require('../errors/notFoundErr');
+const { BadLoginErr } = require('../errors/badLoginErr');
 
 const SALT_NUM = 10;
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (users === null) {
-        throw notFoundErr;
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: users });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.getUsersById = (req, res) => {
+module.exports.getUsersById = (req, res, next) => {
   console.log(req.params);
   User.findById(req.params.userId)
     .then((user) => {
       if ((user === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -43,46 +44,46 @@ module.exports.createUser = (req, res) => {
         name: user.name, about: user.about, avatar: user.avatar, email: user.email,
       },
     }))
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findOneAndUpdate({ _id: req.user._id }, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if ((user === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findOneAndUpdate({ _id: req.user._id }, { avatar }, { new: true })
     .then((user) => {
       if ((user === null)) {
-        throw notFoundErr;
+        throw new NotFoundErr('Пользователь не найден');
       } else {
         res.send({ data: user });
       }
     })
-    .catch((err) => handleErorr(err, res));
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw badLogin;
+        throw new BadLoginErr('Неверные пароль или почта');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw badLogin;
+            throw new BadLoginErr('Неверные пароль или почта');
           }
           const token = jwt.sign({ _id: user._id }, 'secret', {
             expiresIn: '7d',
@@ -94,24 +95,18 @@ module.exports.login = (req, res) => {
           res.send({ token });
         });
     })
-    .catch((err) => {
-      console.log(err);
-      handleErorr(err, res);
-    });
+    .catch(next);
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   console.log(req.user);
   User.findById(req.user._id)
     .then((user) => {
       console.log(user);
       if (!user) {
-        throw notFoundErr;
+        throw new NotFoundErr('Пользователь не найден');
       }
       res.send({ user });
     })
-    .catch((err) => {
-      console.log(req);
-      handleErorr(err, res);
-    });
+    .catch(next);
 };

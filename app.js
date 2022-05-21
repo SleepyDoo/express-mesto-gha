@@ -7,6 +7,7 @@ const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const { loginVal, createUserVal } = require('./errors/validation');
+const { errorHandler } = require('./errors/errorHandler');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -34,6 +35,8 @@ app.use((req, res, next) => {
 });
 
 app.use(errors());
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log('Ссылка на сервер:');
