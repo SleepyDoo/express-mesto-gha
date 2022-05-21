@@ -20,11 +20,11 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findOneAndDelete({ _id: req.params.cardId })
     .then((card) => {
-      if ((card === null)) {
-        throw new NotFoundErr('Карточка не найдена');
+      if ((!card)) {
+        throw new NotFoundErr({ message: 'Карточка не найдена' });
       }
       if (card.owner._id.toString() !== req.user._id) {
-        throw new ForbiddenErr('Вы можете удалять только свои карточки');
+        throw new ForbiddenErr({ message: 'Вы можете удалять только свои карточки' });
       } else {
         res.send({ data: card });
       }
@@ -40,7 +40,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if ((card === null)) {
-        throw new NotFoundErr('Карточка не найдена');
+        throw new NotFoundErr({ message: 'Карточка не найдена' });
       } else {
         res.send({ data: card });
       }
@@ -56,7 +56,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if ((card === null)) {
-        throw new NotFoundErr('Карточка не найдена');
+        throw new NotFoundErr({ message: 'Карточка не найдена' });
       } else {
         res.send({ data: card });
       }

@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (users === null) {
-        throw new NotFoundErr('Пользователь не найден');
+        throw new NotFoundErr({ message: 'Пользователь не найден' });
       } else {
         res.send({ data: users });
       }
@@ -22,8 +22,8 @@ module.exports.getUsersById = (req, res, next) => {
   console.log(req.params);
   User.findById(req.params.userId)
     .then((user) => {
-      if ((user === null)) {
-        throw new NotFoundErr('Пользователь не найден');
+      if ((!user)) {
+        throw new NotFoundErr({ message: 'Пользователь не найден' });
       } else {
         res.send({ data: user });
       }
@@ -52,7 +52,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findOneAndUpdate({ _id: req.user._id }, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if ((user === null)) {
-        throw new NotFoundErr('Пользователь не найден');
+        throw new NotFoundErr({ message: 'Пользователь не найден' });
       } else {
         res.send({ data: user });
       }
@@ -65,7 +65,7 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findOneAndUpdate({ _id: req.user._id }, { avatar }, { new: true })
     .then((user) => {
       if ((user === null)) {
-        throw new NotFoundErr('Пользователь не найден');
+        throw new NotFoundErr({ message: 'Пользователь не найден' });
       } else {
         res.send({ data: user });
       }
@@ -78,12 +78,12 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new BadLoginErr('Неверные пароль или почта');
+        throw new BadLoginErr({ message: 'Неверные пароль или почта' });
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new BadLoginErr('Неверные пароль или почта');
+            throw new BadLoginErr({ message: 'Неверные пароль или почта' });
           }
           const token = jwt.sign({ _id: user._id }, 'secret', {
             expiresIn: '7d',
@@ -104,7 +104,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     .then((user) => {
       console.log(user);
       if (!user) {
-        throw new NotFoundErr('Пользователь не найден');
+        throw new NotFoundErr({ message: 'Пользователь не найден' });
       }
       res.send({ user });
     })
