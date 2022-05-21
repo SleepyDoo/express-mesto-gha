@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundErr = require('../errors/notFoundErr');
 const ForbiddenErr = require('../errors/forbiddenErr');
+const ValidationErr = require('../errors/validationErr');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -14,11 +15,16 @@ module.exports.createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationErr('Переданы некорректные данные');
+      }
+      next(err);
+    })
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findOneAndDelete({ _id: req.params.cardId })
+  Card.findById(req.params.cardId)
     .then((card) => {
       if ((!card)) {
         throw new NotFoundErr('Карточка не найдена');
@@ -28,6 +34,7 @@ module.exports.deleteCard = (req, res, next) => {
       } else {
         res.send({ data: card });
       }
+      return card.remove().then(() => { res.send('Карточка удалена') })
     })
     .catch(next);
 };

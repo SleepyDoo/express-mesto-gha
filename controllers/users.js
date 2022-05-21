@@ -46,11 +46,14 @@ module.exports.createUser = (req, res, next) => {
       },
     }))
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationErr('Переданы некорректные данные');
+      }
       if (err.code === 11000) {
         throw new ConflictErr('Почта уже занята');
       }
+      next(err);
     })
-    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
