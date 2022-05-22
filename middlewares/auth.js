@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const BadLoginErr = require('../errors/notFoundErr');
+const BadLoginErr = require('../errors/badLoginErr');
 
 module.exports.auth = (req, res, next) => {
   const token = req.cookies.jwt;
