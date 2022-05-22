@@ -33,7 +33,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner._id.toString() !== req.user._id) {
         throw new ForbiddenErr('Вы можете удалять только свои карточки');
       }
-      return card.remove().then(() => { res.send('Карточка удалена'); });
+      return card.remove().then(() => { res.send({ message: 'Карточка удалена' }); });
     })
     .catch(next);
 };
