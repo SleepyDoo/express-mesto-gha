@@ -1,5 +1,6 @@
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, CelebrateError } = require('celebrate');
 const validation = require('validator');
+const ValidationErr = require('../errors/validationErr');
 
 // const urlRegex
 // = /https?[www\.]?:\/\/([a-z0-9A-Z]{2,256})\.
@@ -7,7 +8,7 @@ const validation = require('validator');
 
 const validateURL = (value) => {
   if (!validation.isURL(value, { require_protocol: true })) {
-    throw new Error('Неправильный формат ссылки');
+    throw new CelebrateError('Неправильный формат ссылки');
   }
   return value;
 };
