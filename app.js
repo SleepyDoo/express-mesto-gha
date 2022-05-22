@@ -32,7 +32,7 @@ app.use('/', auth, require('./routes/cards'));
 
 app.use((req, res, next) => {
   next(new NotFoundErr('Не найдено'));
-});
+}, auth);
 
 app.use(errors());
 
