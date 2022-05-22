@@ -1,6 +1,5 @@
 const { celebrate, Joi, CelebrateError } = require('celebrate');
 const validation = require('validator');
-const ValidationErr = require('../errors/validationErr');
 
 // const urlRegex
 // = /https?[www\.]?:\/\/([a-z0-9A-Z]{2,256})\.
