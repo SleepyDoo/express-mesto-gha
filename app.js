@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
+const { cors } = require('cors');
 
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
@@ -20,6 +21,13 @@ mongoose.connect('mongodb://localhost:27017/mydb', (err) => {
   }
   console.log('connected to MongoDB');
 });
+
+const corsOptions = {
+  origin: ['https://sleepydoo.mesto.nomoredomains.xyz', 'http://sleepydoo.mesto.nomoredomains.xyz'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
