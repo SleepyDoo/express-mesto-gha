@@ -23,8 +23,15 @@ mongoose.connect('mongodb://localhost:27017/mydb', (err) => {
 });
 
 const corsOptions = {
-  origin: ['https://sleepydoo.mesto.nomoredomains.xyz', 'http://sleepydoo.mesto.nomoredomains.xyz'],
+  credentials: true,
+  origin: ['https://sleepydoo.mesto.nomoredomains.xyz',
+    'http://sleepydoo.mesto.nomoredomains.xyz',
+    'https://localhost:3000',
+    'http://localhost:3000',
+  ],
   optionsSuccessStatus: 200,
+  method: ['GET, HEAD, PUT, PATCH, POST, DELETE'],
+  preflightContinue: false,
 };
 
 app.use(cors(corsOptions));
