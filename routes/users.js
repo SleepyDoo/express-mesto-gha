@@ -4,7 +4,7 @@ const {
 } = require('../controllers/users');
 const {
   updateAvatarVal, updateUserVal, idVal,
-} = require('../errors/validation');
+} = require('../middlewares/validation');
 
 router.get('/users', getUsers);
 router.patch('/users/me', updateUserVal, updateUser);

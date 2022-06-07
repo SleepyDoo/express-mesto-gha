@@ -6,8 +6,9 @@ const { errors } = require('celebrate');
 
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
-const { loginVal, createUserVal } = require('./errors/validation');
+const { loginVal, createUserVal } = require('./middlewares/validation');
 const { errorHandler } = require('./errors/errorHandler');
+const NotFoundErr = require('./errors/notFoundErr');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
@@ -35,9 +36,8 @@ app.use('/', auth, require('./routes/cards'));
 app.use(errorLogger);
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: 'Не найдено' });
-  next();
-});
+  next(new NotFoundErr('Не найдено'));
+}, auth);
 
 app.use(errors());
 
