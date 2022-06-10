@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const BadLoginErr = require('../errors/badLoginErr');
 
 module.exports.auth = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.cookies.jwt || req.headers.authorization.replace('Bearer ', '');
   let payload;
   try {
     payload = jwt.verify(token, 'secret');
