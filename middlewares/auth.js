@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const BadLoginErr = require('../errors/badLoginErr');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 module.exports.auth = (req, res, next) => {
   let token = null;
   if (req.headers.authorization) {
@@ -12,7 +14,7 @@ module.exports.auth = (req, res, next) => {
   }
   let payload;
   try {
-    payload = jwt.verify(token, 'secret');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret');
   } catch (err) {
     next(new BadLoginErr('Необходима авторизация'));
   }
