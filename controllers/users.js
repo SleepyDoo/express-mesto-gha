@@ -6,6 +6,7 @@ const BadLoginErr = require('../errors/badLoginErr');
 const ConflictErr = require('../errors/conflictErr');
 const ValidationErr = require('../errors/validationErr');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
 const SALT_NUM = 10;
 
 module.exports.getUsers = (req, res, next) => {
@@ -95,7 +96,7 @@ module.exports.login = (req, res, next) => {
           if (!matched) {
             throw new BadLoginErr('Неверные пароль или почта');
           }
-          const token = jwt.sign({ _id: user._id }, 'secret', {
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret', {
             expiresIn: '7d',
           });
           res.cookie('jwt', token, {
