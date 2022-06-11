@@ -103,7 +103,7 @@ module.exports.login = (req, res, next) => {
             httpOnly: true,
             sameSite: true,
           });
-          res.send({ token });
+          res.send({ data: token });
         });
     })
     .catch(next);
@@ -117,7 +117,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundErr('Пользователь не найден');
       }
-      res.send({ user });
+      res.send({ data: user });
     })
     .catch(next);
 };
