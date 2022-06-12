@@ -55,11 +55,11 @@ app.post('/signup', createUserVal, createUser);
 app.use('/', auth, require('./routes/users'));
 app.use('/', auth, require('./routes/cards'));
 
-app.use(errorLogger);
-
 app.use((req, res, next) => {
   next(new NotFoundErr('Не найдено'));
 }, auth);
+
+app.use(errorLogger);
 
 app.use(errors());
 
